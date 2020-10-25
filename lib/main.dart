@@ -1,4 +1,5 @@
 import 'package:bacs3403_project_app/insertToken.dart';
+import 'package:bacs3403_project_app/tokenVerified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -15,9 +16,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: Scaffold(
-          body: InsertToken()
-      ),
+      routes: <String, WidgetBuilder>{
+        '/': (context) => InsertToken(),
+        //'/about': (context) => TokenVerified()
+      },
     );
   }
 }
