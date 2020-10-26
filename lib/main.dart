@@ -2,8 +2,10 @@ import 'package:bacs3403_project_app/insertToken.dart';
 import 'package:bacs3403_project_app/tokenVerified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() {
+  DotEnv().load('.env');
   runApp(MyApp());
 }
 
