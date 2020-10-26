@@ -18,7 +18,7 @@ class TokenVerified extends StatelessWidget {
               Padding(
                 padding: paddingVertical,
                 child: Image.asset(
-                  'images/MainLogoAsset1.png',
+                  'assets/images/MainLogoAsset1.png',
                 ),
               ),
               Padding(

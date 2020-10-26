@@ -14,7 +14,7 @@ class InsertToken extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                'images/MainLogoAsset1.png',
+                'assets/images/MainLogoAsset1.png',
               ),
               SizedBox(height: 16.0),
               Text(
