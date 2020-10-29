@@ -56,10 +56,9 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
       _toggleLoading(true);
       submitToken(_controller.text).then((candidate) {
         _toggleLoading(false);
-        //TODO set session data
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TokenVerified()),
+          MaterialPageRoute(builder: (context) => TokenVerified(candidate)),
         );
       }, onError: (error) {
         _toggleLoading(false);

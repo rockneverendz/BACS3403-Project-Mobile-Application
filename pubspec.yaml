@@ -30,6 +30,11 @@ dependencies:
   # For handling API URLs in different environments
   flutter_dotenv: ^2.1.0
 
+  # Date formatting and parsing (and more)
+  intl: ^0.16.1
+
+  # For countdowns
+  countdown_flutter: ^0.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

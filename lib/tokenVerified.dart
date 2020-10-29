@@ -1,9 +1,16 @@
+import 'package:bacs3403_project_app/model/candidate.dart';
+import 'package:countdown_flutter/countdown_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+
+const paddingVertical = EdgeInsets.symmetric(vertical: 8);
+const paddingAll = EdgeInsets.all(4);
 
 class TokenVerified extends StatelessWidget {
-  static const paddingVertical = EdgeInsets.symmetric(vertical: 8);
-  static const paddingAll = EdgeInsets.all(4);
+  final Candidate candidate;
+
+  TokenVerified(this.candidate);
 
   @override
   Widget build(BuildContext context) {
@@ -23,26 +30,21 @@ class TokenVerified extends StatelessWidget {
               ),
               Padding(
                 padding: paddingVertical,
-                child: Text(
-                  'Please enter the token given to verify your identity.',
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-              Padding(
-                padding: paddingVertical,
                 child: Table(
                   columnWidths: {0: FractionColumnWidth(.25)},
                   children: [
-                    TableRow(children: [
-                      Padding(
-                        padding: paddingAll,
-                        child: Text('Name', textAlign: TextAlign.end),
-                      ),
-                      Padding(
-                        padding: paddingAll,
-                        child: Text('TAN AH KAO'),
-                      ),
-                    ],),
+                    TableRow(
+                      children: [
+                        Padding(
+                          padding: paddingAll,
+                          child: Text('Name', textAlign: TextAlign.end),
+                        ),
+                        Padding(
+                          padding: paddingAll,
+                          child: Text(candidate.name),
+                        ),
+                      ],
+                    ),
                     TableRow(children: [
                       Padding(
                         padding: paddingAll,
@@ -50,7 +52,7 @@ class TokenVerified extends StatelessWidget {
                       ),
                       Padding(
                         padding: paddingAll,
-                        child: Text('WP Kuala Lumpur TARUC'),
+                        child: Text(candidate.test.venue),
                       ),
                     ]),
                     TableRow(children: [
@@ -60,7 +62,9 @@ class TokenVerified extends StatelessWidget {
                       ),
                       Padding(
                         padding: paddingAll,
-                        child: Text('9 August 2020'),
+                        child: Text(
+                          new DateFormat.yMMMMd().format(candidate.test.date),
+                        ),
                       ),
                     ]),
                     TableRow(children: [
@@ -70,23 +74,84 @@ class TokenVerified extends StatelessWidget {
                       ),
                       Padding(
                         padding: paddingAll,
-                        child: Text('10:00 AM'),
+                        child: Text(
+                          new DateFormat.jm().format(candidate.test.time),
+                        ),
                       ),
                     ]),
                   ],
                 ),
               ),
-              Padding(
-                padding: paddingVertical,
-                child: MaterialButton(
-                  //TODO Disable button before exam
-                  //onPressed: _handleSubmit,
-                  child: Text('Enter'),
-                ),
+              ContinueButton(
+                date: candidate.test.date,
+                time: candidate.test.time,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ContinueButton extends StatefulWidget {
+  ContinueButton({Key key, this.date, this.time}) : super(key: key);
+
+  final DateTime date;
+  final DateTime time;
+
+  @override
+  _ContinueButtonState createState() => _ContinueButtonState(date, time);
+}
+
+class _ContinueButtonState extends State<ContinueButton> {
+  Duration _countdown;
+  bool isDone = false;
+
+  _ContinueButtonState(_date, _time) {
+    DateTime _dateTime = DateTime(
+      _date.year,
+      _date.month,
+      _date.day,
+      _time.hour,
+      _time.minute,
+    );
+    DateTime _now = new DateTime.now();
+    _countdown = _dateTime.difference(_now);
+
+    // For debugging purposes
+    //_countdown = Duration(seconds: 3);
+  }
+
+  void _handleSubmit() {
+    setState(() {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(content: Text("Button Pressed!")),
+      );
+    });
+  }
+
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: paddingVertical,
+      child: Countdown(
+        duration: _countdown,
+        onFinish: () {
+          isDone = true;
+        },
+        builder: (BuildContext ctx, Duration remaining) {
+          if (isDone){
+            return ElevatedButton(
+              onPressed: _handleSubmit,
+              child: Text('Enter'),
+            );
+          } else{
+            return ElevatedButton(
+              onPressed: () {},
+              child: Text(remaining.toString()),
+            );
+          }
+        },
       ),
     );
   }
