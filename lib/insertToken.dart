@@ -1,6 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:bacs3403_project_app/model/candidate.dart';
 import 'package:bacs3403_project_app/tokenVerified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
 class InsertToken extends StatelessWidget {
   @override
@@ -39,18 +46,38 @@ class AccessTokenInput extends StatefulWidget {
 }
 
 class _AccessTokenInputState extends State<AccessTokenInput> {
+  final TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  double progress = 0;
 
   void _handleSubmit() {
     // Validate will return true if the form is valid, or false if the form is invalid.
     if (_formKey.currentState.validate()) {
-      //TODO Send request to server and retrieve.
-      // Process data.
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => TokenVerified()),
-      );
+      _toggleLoading(true);
+      submitToken(_controller.text).then((candidate) {
+        _toggleLoading(false);
+        //TODO set session data
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TokenVerified()),
+        );
+      }, onError: (error) {
+        _toggleLoading(false);
+        Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text(error.toString())),
+        );
+      });
     }
+  }
+
+  void _toggleLoading(bool isLoading) {
+    setState(() {
+      if (isLoading) {
+        progress = null;
+      } else {
+        progress = 0;
+      }
+    });
   }
 
   @override
@@ -60,6 +87,7 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
       child: Column(
         children: <Widget>[
           TextFormField(
+            controller: _controller,
             decoration: const InputDecoration(
               hintText: 'Access Token',
             ),
@@ -70,13 +98,53 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
               return null;
             },
           ),
+          LinearProgressIndicator(
+            value: progress,
+          ),
           SizedBox(height: 16.0),
-          MaterialButton(
-            onPressed: _handleSubmit,
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _handleSubmit();
+              });
+            },
             child: Text('Continue'),
           ),
         ],
       ),
     );
+  }
+}
+
+Future<Candidate> submitToken(String token) async {
+  final _authority = DotEnv().env['API_URL'];
+  final _path = '/api/Candidates/RedeemToken';
+  final _param = {'token': token};
+  final _uri = Uri.https(_authority, _path, _param);
+
+  try {
+    final http.Response response =
+        await http.get(_uri).timeout(Duration(seconds: 2));
+
+    // Success
+    if (response.statusCode == 200)
+      return Candidate.fromJson(jsonDecode(response.body));
+
+    // Not Found
+    else if (response.statusCode == 404)
+      return Future.error('Invalid Token');
+
+    // Other
+    else
+      return Future.error('Error ' +
+          response.statusCode.toString() +
+          " " +
+          response.reasonPhrase);
+  } on SocketException {
+    return Future.error('SocketException : Failed to establish connection');
+  } on TimeoutException {
+    return Future.error('TimeoutException : Failed to establish connection');
+  }  on Exception catch (Exception) {
+    return Future.error(Exception.runtimeType.toString());
   }
 }

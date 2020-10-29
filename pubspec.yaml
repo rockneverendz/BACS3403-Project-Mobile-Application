@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # For sending data to the internet
+  http: ^0.12.2
+
   # For handling API URLs in different environments
   flutter_dotenv: ^2.1.0
 
