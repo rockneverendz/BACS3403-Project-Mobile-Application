@@ -20,7 +20,7 @@ class Test {
   Map<String, dynamic> toJson() => {
         'testID': testID,
         'venue': venue,
-        'date': date,
-        'time': time,
+        'date': date.toIso8601String(),
+        'time': time.toIso8601String(),
       };
 }
