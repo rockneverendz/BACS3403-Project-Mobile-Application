@@ -1,21 +1,16 @@
 import 'package:bacs3403_project_app/model/test.dart';
+import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-class Candidate {
-  final int candidateID;
-  final String name;
-  final String token;
-  final int testID;
-  final Test test;
-  final String status;
+class Candidate extends Model {
+  int candidateID;
+  String name;
+  String token;
+  int testID;
+  Test test;
+  String status;
 
-  Candidate(
-    this.candidateID,
-    this.name,
-    this.token,
-    this.testID,
-    this.test,
-    this.status,
-  );
+  Candidate();
 
   Candidate.fromJson(Map<String, dynamic> json)
       : candidateID = json['candidateID'],
@@ -33,4 +28,17 @@ class Candidate {
         'test': test.toJson(),
         'status': status,
       };
+
+  void fill(Candidate candidate) {
+    candidateID = candidate.candidateID;
+    name = candidate.name;
+    token = candidate.token;
+    testID = candidate.testID;
+    test = candidate.test;
+    status = candidate.status;
+  }
+
+  /// Wraps [ScopedModel.of] for this [Model].
+  static Candidate of(BuildContext context) =>
+      ScopedModel.of<Candidate>(context);
 }

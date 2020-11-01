@@ -56,9 +56,10 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
       _toggleLoading(true);
       submitToken(_controller.text).then((candidate) {
         _toggleLoading(false);
+        Candidate.of(context).fill(candidate);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TokenVerified(candidate)),
+          MaterialPageRoute(builder: (context) => TokenVerified()),
         );
       }, onError: (error) {
         _toggleLoading(false);
@@ -143,7 +144,7 @@ Future<Candidate> submitToken(String token) async {
     return Future.error('SocketException : Failed to establish connection');
   } on TimeoutException {
     return Future.error('TimeoutException : Failed to establish connection');
-  }  on Exception catch (Exception) {
+  } on Exception catch (Exception) {
     return Future.error(Exception.runtimeType.toString());
   }
 }

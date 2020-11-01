@@ -1,4 +1,5 @@
 import 'package:bacs3403_project_app/model/candidate.dart';
+import 'package:bacs3403_project_app/verifyFace.dart';
 import 'package:countdown_flutter/countdown_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,12 +9,12 @@ const paddingVertical = EdgeInsets.symmetric(vertical: 8);
 const paddingAll = EdgeInsets.all(4);
 
 class TokenVerified extends StatelessWidget {
-  final Candidate candidate;
-
-  TokenVerified(this.candidate);
-
   @override
   Widget build(BuildContext context) {
+
+    // Get candidate information from main
+    Candidate candidate = Candidate.of(context);
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -119,16 +120,8 @@ class _ContinueButtonState extends State<ContinueButton> {
     DateTime _now = new DateTime.now();
     _countdown = _dateTime.difference(_now);
 
-    // For debugging purposes
-    //_countdown = Duration(seconds: 3);
-  }
-
-  void _handleSubmit() {
-    setState(() {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(content: Text("Button Pressed!")),
-      );
-    });
+    // TODO: Remember to remove before testing / production
+    _countdown = Duration(seconds: 3);
   }
 
   Widget build(BuildContext context) {
@@ -140,12 +133,17 @@ class _ContinueButtonState extends State<ContinueButton> {
           isDone = true;
         },
         builder: (BuildContext ctx, Duration remaining) {
-          if (isDone){
+          if (isDone) {
             return ElevatedButton(
-              onPressed: _handleSubmit,
-              child: Text('Enter'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => VerifyFace()),
+                );
+              },
+              child: Text('Continue'),
             );
-          } else{
+          } else {
             return ElevatedButton(
               onPressed: () {},
               child: Text(remaining.toString()),
