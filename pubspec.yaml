@@ -24,6 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # These three are required to take a photo
+  camera: ^0.5.8+11
+  path_provider: ^1.6.22
+  path: ^1.7.0
+
   # For sending data to the internet
   http: ^0.12.2
 
