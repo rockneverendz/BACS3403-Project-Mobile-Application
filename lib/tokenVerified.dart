@@ -121,7 +121,11 @@ class _ContinueButtonState extends State<ContinueButton> {
     _countdown = _dateTime.difference(_now);
 
     // TODO: Remember to remove before testing / production
-    _countdown = Duration(seconds: 3);
+    _countdown = Duration(seconds: -1);
+
+    // Exam already started
+    if (_countdown.isNegative)
+      isDone = true;
   }
 
   Widget build(BuildContext context) {
@@ -141,7 +145,7 @@ class _ContinueButtonState extends State<ContinueButton> {
                   MaterialPageRoute(builder: (context) => VerifyFace()),
                 );
               },
-              child: Text('Continue'),
+              child: Text('Continue to Face Recognition'),
             );
           } else {
             return ElevatedButton(
