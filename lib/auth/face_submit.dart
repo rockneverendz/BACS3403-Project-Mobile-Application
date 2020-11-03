@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
 import '../model/candidate.dart';
+import 'face_verified.dart';
 
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
@@ -90,8 +91,7 @@ class _SubmitButtonState extends State<SubmitButton> {
       setLoading(false);
       Navigator.push(
         this.context,
-        // TODO next page
-        MaterialPageRoute(builder: (context) => null),
+        MaterialPageRoute(builder: (context) => FaceVerified()),
       );
     }, onError: (error) {
       setLoading(false);
@@ -107,9 +107,8 @@ class _SubmitButtonState extends State<SubmitButton> {
     });
   }
 
-  Future<Candidate> submitPhoto(String token, File imageFile) async {
+  Future<void> submitPhoto(String token, File imageFile) async {
     // Prepare image to upload
-    // TODO called on null
     final stream = new http.ByteStream(imageFile.openRead());
     final length = await imageFile.length();
 
@@ -134,7 +133,7 @@ class _SubmitButtonState extends State<SubmitButton> {
 
       // Success
       if (streamedResponse.statusCode == HttpStatus.ok) {
-        return Future.error('Ok! Valid!');
+        return;
       }
       // Not Found
       else if (streamedResponse.statusCode == HttpStatus.notFound) {
