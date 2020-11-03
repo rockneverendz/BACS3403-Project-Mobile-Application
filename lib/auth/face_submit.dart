@@ -9,7 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
-import 'model/candidate.dart';
+import '../model/candidate.dart';
 
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
@@ -142,7 +142,8 @@ class _SubmitButtonState extends State<SubmitButton> {
       }
       // Not Found
       else if (streamedResponse.statusCode == HttpStatus.badRequest) {
-        http.Response response = await http.Response.fromStream(streamedResponse);
+        http.Response response =
+            await http.Response.fromStream(streamedResponse);
         Map<String, dynamic> json = jsonDecode(response.body);
         return Future.error(json['Message']);
       }

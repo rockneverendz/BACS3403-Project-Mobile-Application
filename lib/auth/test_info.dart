@@ -1,9 +1,10 @@
 import 'package:bacs3403_project_app/model/candidate.dart';
-import 'package:bacs3403_project_app/verifyFace.dart';
 import 'package:countdown_flutter/countdown_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+
+import 'face_capture.dart';
 
 const paddingVertical = EdgeInsets.symmetric(vertical: 8);
 const paddingAll = EdgeInsets.all(4);
@@ -11,7 +12,6 @@ const paddingAll = EdgeInsets.all(4);
 class TokenVerified extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     // Get candidate information from main
     Candidate candidate = Candidate.of(context);
 
@@ -124,8 +124,7 @@ class _ContinueButtonState extends State<ContinueButton> {
     _countdown = Duration(seconds: -1);
 
     // Exam already started
-    if (_countdown.isNegative)
-      isDone = true;
+    if (_countdown.isNegative) isDone = true;
   }
 
   Widget build(BuildContext context) {

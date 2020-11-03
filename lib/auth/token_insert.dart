@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bacs3403_project_app/model/candidate.dart';
-import 'package:bacs3403_project_app/tokenVerified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+
+import 'test_info.dart';
 
 class InsertToken extends StatelessWidget {
   @override

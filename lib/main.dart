@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:bacs3403_project_app/insertToken.dart';
 import 'package:bacs3403_project_app/model/candidate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import 'auth/token_insert.dart';
 
 void main() {
   DotEnv().load('assets/env/.env');
@@ -32,8 +33,7 @@ class MyApp extends StatelessWidget {
             '/': (context) => InsertToken(),
             //'/about': (context) => TokenVerified()
           },
-        )
-    );
+        ));
   }
 }
 
@@ -41,7 +41,7 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host,
-          int port) => true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
