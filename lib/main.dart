@@ -18,22 +18,28 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Candidate candidate = new Candidate();
+
   @override
   Widget build(BuildContext context) {
     return new ScopedModel<Candidate>(
-        model: new Candidate(),
-        child: new MaterialApp(
-          title: 'Mobile IELTS',
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-          ),
-          routes: <String, WidgetBuilder>{
-            '/': (context) => InsertToken(),
-            //'/about': (context) => TokenVerified()
-          },
-        ));
+      model: candidate,
+      child: new MaterialApp(
+        title: 'Mobile IELTS',
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+        ),
+        routes: <String, WidgetBuilder>{
+          '/': (context) => InsertToken(),
+        },
+      ),
+    );
   }
 }
 
