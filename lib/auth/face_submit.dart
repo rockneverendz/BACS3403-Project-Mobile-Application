@@ -78,10 +78,12 @@ class _SubmitButtonState extends State<SubmitButton> {
     // Get candidate information from main
     Candidate candidate = Candidate.of(context);
 
-    return ElevatedButton(
-      onPressed: () => handleSubmit(candidate.token, file),
-      child: (isLoading) ? CircularProgressIndicator() : Text("Continue"),
-    );
+    return (isLoading)
+        ? CircularProgressIndicator()
+        : ElevatedButton(
+            onPressed: () => handleSubmit(candidate.token, file),
+            child: Text("Continue"),
+          );
   }
 
   handleSubmit(String token, File file) {

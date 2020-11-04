@@ -50,6 +50,7 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
   final TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   double progress = 0;
+  bool isLoading = false;
 
   void _handleSubmit() {
     // Validate will return true if the form is valid, or false if the form is invalid.
@@ -73,6 +74,7 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
 
   void _toggleLoading(bool isLoading) {
     setState(() {
+      this.isLoading = isLoading;
       if (isLoading) {
         progress = null;
       } else {
@@ -90,7 +92,7 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
           TextFormField(
             controller: _controller,
             decoration: const InputDecoration(
-              hintText: 'Access Token',
+              labelText: 'Access Token',
             ),
             validator: (value) {
               if (value.isEmpty) {
@@ -99,18 +101,17 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
               return null;
             },
           ),
-          LinearProgressIndicator(
-            value: progress,
-          ),
           SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _handleSubmit();
-              });
-            },
-            child: Text('Continue'),
-          ),
+          (isLoading)
+              ? CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _handleSubmit();
+                    });
+                  },
+                  child: Text('Continue'),
+                ),
         ],
       ),
     );
@@ -142,9 +143,9 @@ Future<Candidate> submitToken(String token) async {
           " " +
           response.reasonPhrase);
   } on SocketException {
-    return Future.error('SocketException : Failed to establish connection');
+    return Future.error('Failed to establish connection');
   } on TimeoutException {
-    return Future.error('TimeoutException : Failed to establish connection');
+    return Future.error('Request timed out. Please try again.');
   } on Exception catch (Exception) {
     return Future.error(Exception.runtimeType.toString());
   }
