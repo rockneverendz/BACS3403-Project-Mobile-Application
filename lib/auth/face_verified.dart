@@ -1,3 +1,4 @@
+import 'package:bacs3403_project_app/auth/test_start.dart';
 import 'package:bacs3403_project_app/model/candidate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -38,10 +39,10 @@ class FaceVerified extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => null),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TestStart()),
+                  );
                 },
                 child: Text('Scan seat QR'),
               ),
