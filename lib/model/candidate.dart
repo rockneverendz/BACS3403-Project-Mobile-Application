@@ -2,6 +2,8 @@ import 'package:bacs3403_project_app/model/test.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import 'recording.dart';
+
 class Candidate extends Model {
   int candidateID;
   String name;
@@ -9,6 +11,7 @@ class Candidate extends Model {
   int testID;
   Test test;
   String status;
+  List<RecordingDTO> recording;
 
   Candidate();
 

@@ -1,7 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bacs3403_project_app/model/candidate.dart';
+import 'package:bacs3403_project_app/model/recording.dart';
+import 'package:bacs3403_project_app/test/recordings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 const paddingVertical = EdgeInsets.symmetric(vertical: 8);
@@ -110,23 +119,11 @@ Answer all the questions.''';
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Sample Audio'),
-                    ),
+                    child: SampleAudio(),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => null),
-                        // );
-                      },
-                      child: Text('Start Test'),
-                    ),
-                  ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: StartButton()),
                 ],
               ),
             ],
@@ -134,5 +131,126 @@ Answer all the questions.''';
         ),
       ),
     );
+  }
+}
+
+class StartButton extends StatefulWidget {
+  @override
+  _StartButtonState createState() => _StartButtonState();
+}
+
+class _StartButtonState extends State<StartButton> {
+  bool isLoading = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<RecordingDTO>>(
+      future: downloadData(), // function where you call your api
+      builder:
+          (BuildContext context, AsyncSnapshot<List<RecordingDTO>> snapshot) {
+        // AsyncSnapshot<Your object type>
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else {
+          if (snapshot.hasError) {
+            return Text('Error');
+          } else {
+            Candidate.of(context).recording = snapshot.data;
+            return ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TestView()),
+                );
+              },
+              child: Text('Start Test'),
+            );;
+            // snapshot.data  :- get your object which is pass from your downloadData() function
+          }
+        }
+      },
+    );
+  }
+
+  Future<List<RecordingDTO>> downloadData() async {
+    Candidate candidate = Candidate.of(context);
+
+    // Prepare post uri
+    final authority = DotEnv().env['API_URL'];
+    final path = '/api/RecordingLists/CreateRecordingList';
+    final param = {'token': candidate.token};
+    final uri = Uri.https(authority, path, param);
+
+    try {
+      var response = await http.post(uri).timeout(Duration(seconds: 10));
+
+      // Success
+      if (response.statusCode == HttpStatus.ok) {
+        List<dynamic> json = jsonDecode(response.body);
+        List<RecordingDTO> object =
+            json.map((e) => RecordingDTO.fromJson(e)).toList();
+        return Future.value(object);
+      }
+      // Not Found
+      else if (response.statusCode == HttpStatus.notFound) {
+        return Future.error('Not found!');
+      }
+      // Not Found
+      else if (response.statusCode == HttpStatus.badRequest) {
+        return Future.error('Bad request!');
+      }
+      // Other
+      else {
+        return Future.error(
+          'Error ${response.statusCode.toString()} ${response.reasonPhrase}',
+        );
+      }
+    } on SocketException {
+      return Future.error('SocketException : Failed to establish connection');
+    } on TimeoutException {
+      return Future.error('TimeoutException : Failed to establish connection');
+    } on Exception catch (Exception) {
+      print(Exception);
+      return Future.error(Exception.runtimeType.toString());
+    }
+  }
+}
+
+class SampleAudio extends StatefulWidget {
+  @override
+  _SampleAudioState createState() => _SampleAudioState();
+}
+
+class _SampleAudioState extends State<SampleAudio> {
+  bool isPlaying = false;
+
+  //TODO update sample audio
+  var url =
+      "http://10.0.2.2:64165/Storage/AudioRecordings/Part1/IELTS-Listening-Test-1-Section-1.mp3";
+  AudioPlayer audioPlayer = AudioPlayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return (isPlaying)
+        ? ElevatedButton(
+            onPressed: () {
+              audioPlayer.stop();
+              setPlaying(false);
+            },
+            child: Text('Stop'),
+          )
+        : ElevatedButton(
+            onPressed: () {
+              audioPlayer.play(url);
+              setPlaying(true);
+            },
+            child: Text('Sample Audio'),
+          );
+  }
+
+  void setPlaying(bool bool) {
+    setState(() {
+      isPlaying = bool;
+    });
   }
 }
