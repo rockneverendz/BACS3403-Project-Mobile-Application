@@ -1,3 +1,5 @@
+import 'package:bacs3403_project_app/model/answer.dart';
+import 'package:bacs3403_project_app/model/candidate.dart';
 import 'package:bacs3403_project_app/model/questiongroup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,6 @@ class QuestionGroupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int length = question.questionNoEnd - question.questionNoStart;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,16 +37,7 @@ class QuestionGroupView extends StatelessWidget {
               Container(
                 height: constraints.maxHeight * 0.34,
                 padding: _padding,
-                child: ListView.builder(
-                  itemCount: length,
-                  itemBuilder: (context, index) {
-                    return TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Question ' +
-                              (question.questionNoStart + index).toString()),
-                    );
-                  },
-                ),
+                child: QuestionForm(question: question),
               )
             ],
           );
@@ -54,3 +46,42 @@ class QuestionGroupView extends StatelessWidget {
     );
   }
 }
+
+class QuestionForm extends StatefulWidget {
+  final QuestionGroupDTO question;
+
+  const QuestionForm({Key key, this.question}) : super(key: key);
+
+  @override
+  _QuestionFormState createState() => _QuestionFormState(question: question);
+}
+
+class _QuestionFormState extends State<QuestionForm> {
+  final _formKey = GlobalKey<FormState>();
+  final QuestionGroupDTO question;
+
+  _QuestionFormState({this.question});
+
+  @override
+  Widget build(BuildContext context) {
+    final int length = question.questionNoEnd - question.questionNoStart;
+    List<Answer> answer = Candidate.of(context).answer;
+
+    return Form(
+      key: _formKey,
+      child: ListView.builder(
+        itemCount: length,
+        itemBuilder: (context, index) {
+          return TextFormField(
+            initialValue: answer[question.questionNoStart].answer,
+            onChanged: (string) => answer[question.questionNoStart].answer = string,
+            decoration: InputDecoration(
+                labelText: 'Question ' +
+                    (question.questionNoStart + index).toString()),
+          );
+        },
+      ),
+    );
+  }
+}
+

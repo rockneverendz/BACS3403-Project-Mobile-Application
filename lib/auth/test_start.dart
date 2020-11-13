@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bacs3403_project_app/model/answer.dart';
 import 'package:bacs3403_project_app/model/candidate.dart';
 import 'package:bacs3403_project_app/model/recording.dart';
 import 'package:bacs3403_project_app/test/recordings.dart';
@@ -155,7 +156,19 @@ class _StartButtonState extends State<StartButton> {
           if (snapshot.hasError) {
             return Text('Error');
           } else {
-            Candidate.of(context).recording = snapshot.data;
+
+            // Initialize Answer array
+            var recording = snapshot.data;
+            var answer = new List<Answer>(40);
+            for(int i = 0; i < 4; i++){
+              for(int j = 0; j < 10; j++){
+                answer[i*10+j] = new Answer(recording[i].recordingId);
+              }
+            }
+
+            Candidate.of(context).recording = recording;
+            Candidate.of(context).answer = answer;
+
             return ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -164,8 +177,7 @@ class _StartButtonState extends State<StartButton> {
                 );
               },
               child: Text('Start Test'),
-            );;
-            // snapshot.data  :- get your object which is pass from your downloadData() function
+            );
           }
         }
       },
