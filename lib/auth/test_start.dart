@@ -179,7 +179,7 @@ class _StartButtonState extends State<StartButton> {
     final authority = DotEnv().env['API_URL'];
     final path = '/api/RecordingLists/CreateRecordingList';
     final param = {'token': candidate.token};
-    final uri = Uri.https(authority, path, param);
+    final uri = Uri.http(authority, path, param);
 
     try {
       var response = await http.post(uri).timeout(Duration(seconds: 10));

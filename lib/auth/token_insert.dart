@@ -91,9 +91,7 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
         children: <Widget>[
           TextFormField(
             controller: _controller,
-            decoration: const InputDecoration(
-              labelText: 'Access Token',
-            ),
+            decoration: const InputDecoration(labelText: 'Access Token'),
             validator: (value) {
               if (value.isEmpty) {
                 return 'Please enter access token';
@@ -122,11 +120,11 @@ Future<Candidate> submitToken(String token) async {
   final _authority = DotEnv().env['API_URL'];
   final _path = '/api/Candidates/RedeemToken';
   final _param = {'token': token};
-  final _uri = Uri.https(_authority, _path, _param);
+  final _uri = Uri.http(_authority, _path, _param);
 
   try {
     final http.Response response =
-        await http.get(_uri).timeout(Duration(seconds: 2));
+        await http.get(_uri).timeout(Duration(seconds: 10));
 
     // Success
     if (response.statusCode == 200)

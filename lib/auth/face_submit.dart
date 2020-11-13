@@ -118,7 +118,7 @@ class _SubmitButtonState extends State<SubmitButton> {
     final authority = DotEnv().env['API_URL'];
     final path = '/api/Candidates/VerifyCandidate';
     final param = {'token': token};
-    final uri = Uri.https(authority, path, param);
+    final uri = Uri.http(authority, path, param);
 
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile('face', stream, length,
