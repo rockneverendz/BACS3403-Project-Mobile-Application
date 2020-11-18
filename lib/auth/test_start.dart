@@ -160,9 +160,24 @@ class _StartButtonState extends State<StartButton> {
             // Initialize Answer array
             var recording = snapshot.data;
             var answer = new List<Answer>(40);
-            for(int i = 0; i < 4; i++){
-              for(int j = 0; j < 10; j++){
-                answer[i*10+j] = new Answer(recording[i].recordingId);
+            var index = 0;
+
+            // For each recording
+            for (int i = 0; i < recording.length; i++) {
+              var questionGroups = recording[i].questionGroups;
+
+              // For each recording group
+              for (int j = 0; j < questionGroups.length; j++) {
+                var length = questionGroups[j].questionNoEnd -
+                    questionGroups[j].questionNoStart +
+                    1;
+
+                // For each recording group's question
+                for (int k = 0; k < length; k++) {
+                  answer[index] = new Answer(index, recording[i].recordingId,
+                      questionGroups[j].questionGroupId);
+                  index++;
+                }
               }
             }
 
