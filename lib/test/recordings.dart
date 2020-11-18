@@ -1,6 +1,7 @@
 import 'package:bacs3403_project_app/model/candidate.dart';
 import 'package:bacs3403_project_app/model/recording.dart';
 import 'package:bacs3403_project_app/test/questiongroups.dart';
+import 'package:bacs3403_project_app/test/submit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,23 @@ class TestView extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text('IELTS Listening Test'),
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SubmitView()),
+                  );
+                },
+                child: Icon(
+                  Icons.upload_rounded,
+                  size: 26.0,
+                ),
+              ),
+            ),
+          ],
           bottom: TabBar(
             tabs: [
               Tab(text: 'Part 1'),
