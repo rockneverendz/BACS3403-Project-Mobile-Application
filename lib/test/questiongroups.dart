@@ -18,6 +18,8 @@ class QuestionGroupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  final int length = question.questionNoEnd - question.questionNoStart;
+  List<Answer> answer = Candidate.of(context).answer;
 
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +39,18 @@ class QuestionGroupView extends StatelessWidget {
               Container(
                 height: constraints.maxHeight * 0.34,
                 padding: _padding,
-                child: QuestionForm(question: question),
+                child: ListView.builder(
+                  itemCount: length,
+                  itemBuilder: (context, index) {
+                    return TextFormField(
+                      initialValue: answer[question.questionNoStart + index].answer,
+                      onChanged: (string) => answer[question.questionNoStart + index].answer = string,
+                      decoration: InputDecoration(
+                          labelText: 'Question ' +
+                              (question.questionNoStart + index).toString()),
+                    );
+                  },
+                ),
               )
             ],
           );
@@ -46,42 +59,3 @@ class QuestionGroupView extends StatelessWidget {
     );
   }
 }
-
-class QuestionForm extends StatefulWidget {
-  final QuestionGroupDTO question;
-
-  const QuestionForm({Key key, this.question}) : super(key: key);
-
-  @override
-  _QuestionFormState createState() => _QuestionFormState(question: question);
-}
-
-class _QuestionFormState extends State<QuestionForm> {
-  final _formKey = GlobalKey<FormState>();
-  final QuestionGroupDTO question;
-
-  _QuestionFormState({this.question});
-
-  @override
-  Widget build(BuildContext context) {
-    final int length = question.questionNoEnd - question.questionNoStart;
-    List<Answer> answer = Candidate.of(context).answer;
-
-    return Form(
-      key: _formKey,
-      child: ListView.builder(
-        itemCount: length,
-        itemBuilder: (context, index) {
-          return TextFormField(
-            initialValue: answer[question.questionNoStart].answer,
-            onChanged: (string) => answer[question.questionNoStart].answer = string,
-            decoration: InputDecoration(
-                labelText: 'Question ' +
-                    (question.questionNoStart + index).toString()),
-          );
-        },
-      ),
-    );
-  }
-}
-
