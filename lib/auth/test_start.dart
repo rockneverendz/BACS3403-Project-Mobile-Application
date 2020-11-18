@@ -154,9 +154,9 @@ class _StartButtonState extends State<StartButton> {
           return CircularProgressIndicator();
         } else {
           if (snapshot.hasError) {
+            print(snapshot.error.toString());
             return Text('Error');
           } else {
-
             // Initialize Answer array
             var recording = snapshot.data;
             var answer = new List<Answer>(40);
@@ -190,11 +190,14 @@ class _StartButtonState extends State<StartButton> {
     // Prepare post uri
     final authority = DotEnv().env['API_URL'];
     final path = '/api/RecordingLists/CreateRecordingList';
-    final param = {'token': candidate.token};
-    final uri = Uri.http(authority, path, param);
+    final body = jsonEncode({'token': candidate.token});
+    final headers = {"Content-Type": "application/json"};
+    final uri = Uri.http(authority, path);
 
     try {
-      var response = await http.post(uri).timeout(Duration(seconds: 10));
+      var response = await http
+          .post(uri, body: body, headers: headers)
+          .timeout(Duration(seconds: 10));
 
       // Success
       if (response.statusCode == HttpStatus.ok) {
@@ -222,7 +225,6 @@ class _StartButtonState extends State<StartButton> {
     } on TimeoutException {
       return Future.error('TimeoutException : Failed to establish connection');
     } on Exception catch (Exception) {
-      print(Exception);
       return Future.error(Exception.runtimeType.toString());
     }
   }
