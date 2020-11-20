@@ -86,6 +86,9 @@ class _TestPartState extends State<TestPart>
       itemBuilder: (_, index) => Card(
         child: ListTile(
           title: Text("Question group " + (index + 1).toString()),
+          trailing: recording.questionGroups[index].isAnswered
+              ? Icon(Icons.check_box)
+              : Icon(Icons.check_box_outline_blank),
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -95,11 +98,16 @@ class _TestPartState extends State<TestPart>
                     recording.part.toString() +
                     " Question Group " +
                     (index + 1).toString(),
+                notifyParent: refresh,
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  refresh() {
+    setState(() {});
   }
 }
