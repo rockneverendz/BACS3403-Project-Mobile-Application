@@ -186,9 +186,12 @@ class _StartButtonState extends State<StartButton> {
 
             return ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => TestView()),
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => TestView(),
+                  ),
+                  (Route<dynamic> route) => false,
                 );
               },
               child: Text('Start Test'),
