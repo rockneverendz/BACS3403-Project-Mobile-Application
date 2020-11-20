@@ -14,6 +14,7 @@ class QuestionGroupDTO extends Model {
   int questionNoEnd;
   int taskType;
   String questionGroupURL;
+  bool isAnswered = false;
 
   QuestionGroupDTO(
     this.questionGroupId,
