@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import 'completed.dart';
 import 'questiongroups.dart';
 
 class SubmitView extends StatelessWidget {
@@ -53,7 +54,6 @@ class _AnswerListWidgetState extends State<AnswerListWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     candidate = Candidate.of(context);
     answer = candidate.answer;
@@ -133,12 +133,20 @@ class _SubmitButtonState extends State<SubmitButton> {
   handleSubmit() {
     setLoading(true);
 
-    submitAnswer().then((candidate) {
+    submitAnswer(context).then((candidate) {
       setLoading(false);
 
-      // Examination Completed
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => Completed(),
+        ),
+            (Route<dynamic> route) => false,
+      );
+
     }, onError: (error) {
       setLoading(false);
+      print(error);
       Scaffold.of(this.context).showSnackBar(
         SnackBar(content: Text(error.toString())),
       );
@@ -150,49 +158,47 @@ class _SubmitButtonState extends State<SubmitButton> {
       isLoading = bool;
     });
   }
+}
 
-  Future<void> submitAnswer() async {
-    final authority = DotEnv().env['API_URL'];
-    //TODO change url
-    final path = '/api/Answers/PostAnswer';
-    final uri = Uri.http(authority, path);
+Future<void> submitAnswer(BuildContext context) async {
+  final authority = DotEnv().env['API_URL'];
+  final path = '/api/Answers/PostAnswer';
+  final uri = Uri.http(authority, path);
 
-    final answer = Candidate.of(context).answer;
-    final token = Candidate.of(context).token;
+  final answer = Candidate.of(context).answer;
+  final token = Candidate.of(context).token;
 
-    final headers = {"Content-Type": "application/json"};
-    final body = jsonEncode({'token': token, 'answers': answer});
+  final headers = {"Content-Type": "application/json"};
+  final body = jsonEncode({'token': token, 'answers': answer});
 
-    try {
-      final http.Response response = await http
-          .post(uri, headers: headers, body: body)
-          .timeout(Duration(seconds: 10));
+  try {
+    final http.Response response = await http
+        .post(uri, headers: headers, body: body)
+        .timeout(Duration(seconds: 10));
 
-      // Success
-      if (response.statusCode == HttpStatus.ok) {
-        return;
-      }
-      // Not Found
-      else if (response.statusCode == HttpStatus.notFound) {
-        return Future.error('Not found!');
-      }
-      // Not Found
-      else if (response.statusCode == HttpStatus.badRequest) {
-        return Future.error('Bad Request!');
-      }
-      // Other
-      else {
-        return Future.error(
-          'Error ${response.statusCode.toString()} ${response.reasonPhrase}',
-        );
-      }
-    } on SocketException {
-      return Future.error('SocketException : Failed to establish connection');
-    } on TimeoutException {
-      return Future.error('TimeoutException : Failed to establish connection');
-    } on Exception catch (Exception) {
-      print(Exception);
-      return Future.error(Exception.runtimeType.toString());
+    // Success
+    if (response.statusCode == HttpStatus.accepted) {
+      return;
     }
+    // Not Found
+    else if (response.statusCode == HttpStatus.notFound) {
+      return Future.error('Not found!');
+    }
+    // Not Found
+    else if (response.statusCode == HttpStatus.badRequest) {
+      return Future.error('Bad Request!');
+    }
+    // Other
+    else {
+      return Future.error(
+        'Error ${response.statusCode.toString()} ${response.reasonPhrase}',
+      );
+    }
+  } on SocketException {
+    return Future.error('SocketException : Failed to establish connection');
+  } on TimeoutException {
+    return Future.error('TimeoutException : Failed to establish connection');
+  } on Exception catch (Exception) {
+    return Future.error(Exception.runtimeType.toString());
   }
 }
