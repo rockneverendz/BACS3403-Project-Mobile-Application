@@ -23,4 +23,14 @@ class Test {
         'date': date.toIso8601String(),
         'time': time.toIso8601String(),
       };
+
+  DateTime dateTime() {
+    return DateTime(
+      this.date.year,
+      this.date.month,
+      this.date.day,
+      this.time.hour,
+      this.time.minute,
+    );
+  }
 }
