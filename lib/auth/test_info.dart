@@ -84,8 +84,7 @@ class TokenVerified extends StatelessWidget {
                 ),
               ),
               ContinueButton(
-                date: candidate.test.date,
-                time: candidate.test.time,
+                dateTime: candidate.test.dateTime(),
               ),
             ],
           ),
@@ -96,32 +95,24 @@ class TokenVerified extends StatelessWidget {
 }
 
 class ContinueButton extends StatefulWidget {
-  ContinueButton({Key key, this.date, this.time}) : super(key: key);
+  ContinueButton({Key key, this.dateTime}) : super(key: key);
 
-  final DateTime date;
-  final DateTime time;
+  final DateTime dateTime;
 
   @override
-  _ContinueButtonState createState() => _ContinueButtonState(date, time);
+  _ContinueButtonState createState() => _ContinueButtonState(dateTime);
 }
 
 class _ContinueButtonState extends State<ContinueButton> {
   Duration _countdown;
   bool isDone = false;
 
-  _ContinueButtonState(_date, _time) {
-    DateTime _dateTime = DateTime(
-      _date.year,
-      _date.month,
-      _date.day,
-      _time.hour,
-      _time.minute,
-    );
+  _ContinueButtonState(DateTime dateTime) {
     DateTime _now = new DateTime.now();
-    _countdown = _dateTime.difference(_now);
+    _countdown = dateTime.difference(_now);
 
     // TODO: Remember to remove before testing / production
-    _countdown = Duration(seconds: -1);
+    //_countdown = Duration(seconds: -1);
 
     // Exam already started
     if (_countdown.isNegative) isDone = true;
@@ -149,11 +140,18 @@ class _ContinueButtonState extends State<ContinueButton> {
           } else {
             return ElevatedButton(
               onPressed: () {},
-              child: Text(remaining.toString()),
+              child: Text(printDuration(remaining)),
             );
           }
         },
       ),
     );
   }
+}
+
+String printDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, "0");
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
 }
