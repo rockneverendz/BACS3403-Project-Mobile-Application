@@ -256,10 +256,23 @@ class SampleAudio extends StatefulWidget {
 class _SampleAudioState extends State<SampleAudio> {
   bool isPlaying = false;
 
-  //TODO update sample audio
-  var url =
-      "http://10.0.2.2:64165/Storage/AudioRecordings/Part1/IELTS-Listening-Test-1-Section-1.mp3";
-  AudioPlayer audioPlayer = AudioPlayer();
+  final authority = DotEnv().env['API_URL'];
+  final path = '/Storage/AudioRecordings/IELTS-Audio-Test.mp3';
+  final AudioPlayer audioPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setPlaying(false);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    audioPlayer.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +286,8 @@ class _SampleAudioState extends State<SampleAudio> {
           )
         : ElevatedButton(
             onPressed: () {
-              audioPlayer.play(url);
+              final uri = Uri.http(authority, path);
+              audioPlayer.play(uri.toString());
               setPlaying(true);
             },
             child: Text('Sample Audio'),
