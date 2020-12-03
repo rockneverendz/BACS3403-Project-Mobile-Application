@@ -65,6 +65,7 @@ class _AccessTokenInputState extends State<AccessTokenInput> {
         );
       }, onError: (error) {
         _toggleLoading(false);
+        print(error);
         Scaffold.of(context).showSnackBar(
           SnackBar(content: Text(error.toString())),
         );
@@ -135,6 +136,10 @@ Future<Candidate> submitToken(String token) async {
     // Not Found
     else if (response.statusCode == 404)
       return Future.error('Invalid Token');
+
+    // Not Found
+    else if (response.statusCode == 400)
+      return Future.error(response.body);
 
     // Other
     else
