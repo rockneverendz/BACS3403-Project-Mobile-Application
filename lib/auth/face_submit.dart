@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bacs3403_project_app/auth/test_start.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,7 +11,6 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
 import '../model/candidate.dart';
-import 'face_verified.dart';
 
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
@@ -93,7 +93,7 @@ class _SubmitButtonState extends State<SubmitButton> {
       setLoading(false);
       Navigator.push(
         this.context,
-        MaterialPageRoute(builder: (context) => FaceVerified()),
+        MaterialPageRoute(builder: (context) => TestStart()),
       );
     }, onError: (error) {
       setLoading(false);
