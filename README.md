@@ -1,19 +1,14 @@
-# bacs3403_project_app
+# BACS3403_PROJECT_APP
 
-A Flutter application.
+## How to run
 
-## Getting Started
+Save `asset/env/.env.example` as `asset/env/.env`  
 
-This project is a starting point for a Flutter application.
+### Run on Android Emulator
+Set `API_URL=10.0.2.2:64165`
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-Copy `asset/env/.env.example` to `asset/env/.env`
-Review what needs to be updated.
+### Run on Android device
+Set `API_URL=localhost:64165`  
+Connect to your andriod device via ADB  
+Open Chrome DevTools  
+Portforward port `64165` to `localhost:64165`
